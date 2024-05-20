@@ -4,6 +4,8 @@ import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
 import com.fourbao.bookbao.backend.dto.request.UserLoginRequest;
 import com.fourbao.bookbao.backend.dto.response.PortalApiResponse;
+import com.fourbao.bookbao.backend.entity.User;
+import com.fourbao.bookbao.backend.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class SessionLoginService {
+    private final UserRepository userRepository;
 
     public void loginToPortal(UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest) throws BaseException {
         String url = "https://auth.imsejong.com/auth?method=DosejongSession";
@@ -46,6 +49,32 @@ public class SessionLoginService {
                 if (session.getAttribute("user") == null) {
                     session.setAttribute("user", userLoginRequest.getId());
                     log.info("[SESSION 생성]");
+
+                    Optional<User> optionalUser = userRepository.findBySchoolNum(session.getAttribute("user").toString());
+                    if (optionalUser.isEmpty()) {
+                        /** 처음 접속 시 user 생성 */
+                        User user = User.builder()
+                                .name(portalApiResponse.getBody().getResult().getBody().getName())
+                                .schoolNum(userLoginRequest.getId())
+                                .email(userLoginRequest.getEmail())
+                                .build();
+
+                        try {
+                            userRepository.save(user);
+                        } catch (BaseException e) {
+                            throw new BaseException(BaseResponseStatus.DATABASE_INSERT_ERROR);
+                        }
+                    } else {
+                        // 이메일 수정한 경우
+                        if (!optionalUser.get().getEmail().equals(userLoginRequest.getEmail())) {
+                            throw new BaseException(BaseResponseStatus.NON_EXIST_EMAIL);
+                        }
+                    }
+                } else {
+                    Optional<User> optionalUser = userRepository.findBySchoolNum(session.getAttribute("user").toString());
+                    if (!optionalUser.get().getEmail().equals(userLoginRequest.getEmail())) {
+                        throw new BaseException(BaseResponseStatus.NON_EXIST_EMAIL);
+                    }
                 }
             } else {
                 throw new BaseException(BaseResponseStatus.NON_EXIST_USER);
