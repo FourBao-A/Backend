@@ -24,7 +24,7 @@ import java.util.Optional;
 public class SessionLoginService {
 
     public void loginToPortal(UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest) throws BaseException {
-        String url = "https://auth.imsejong.com/auth";
+        String url = "https://auth.imsejong.com/auth?method=DosejongSession";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
