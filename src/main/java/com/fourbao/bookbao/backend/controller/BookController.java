@@ -9,18 +9,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/books")
+@RequestMapping("/api/v1/book")
 @RequiredArgsConstructor
 public class BookController {
 
     private final BookService bookService;
 
-    @GetMapping("/books")
-    public BaseResponse<EnrollBookRequest> enrollBookRequestBaseResponse(HttpSession httpSession, @RequestBody EnrollBookRequest enrollBookRequest)
+    @PostMapping("/enroll")
+    public BaseResponse<String> enrollBookRequestBaseResponse(HttpSession httpSession, @RequestBody EnrollBookRequest enrollBookRequest)
     {
         try
         {
-            return new BaseResponse<>(enrollBookRequest);
+            bookService.saveBook(httpSession, enrollBookRequest);
+            return new BaseResponse<>("도서 등록에 성공하였습니다.");
         }catch (BaseException e)
         {
             return new BaseResponse<>(e.getStatus());

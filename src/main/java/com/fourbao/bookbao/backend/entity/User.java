@@ -4,6 +4,9 @@ import com.fourbao.bookbao.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -23,10 +26,18 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String email;
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Book> books = new ArrayList<>();
+
     @Builder
     public User(String name, String schoolNum, String email) {
         this.name = name;
         this.schoolNum = schoolNum;
         this.email = email;
+    }
+
+    public void addBook(Book book) {
+        this.books.add(book);
+        book.setUser(this);
     }
 }

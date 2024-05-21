@@ -2,13 +2,13 @@ package com.fourbao.bookbao.backend.entity;
 
 import com.fourbao.bookbao.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class Book extends BaseEntity
 {
     @Id
@@ -27,44 +27,44 @@ public class Book extends BaseEntity
     @Column(nullable = false)
     private int price;
 
+    @Email
+    private String contactEmail;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Deal_way deal_way;
+    private DealWay dealWay;
 
-    @Column(nullable = true)
-    private String deal_place;
+    private String dealPlace;
 
     @Column(nullable = false)
     private String image;
 
-    @Column(nullable = true)
     private String state;
 
-    @Column(nullable = true)
-    private String ask_for;
+    private String askFor;
 
-    @ManyToOne
-    @JoinColumn
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Builder
-    public Book(Long id, String title, String author, String publisher, int price, Deal_way deal_way, String deal_place, String image, String state, String ask_for)
-    {
-        this.id = id;
+    public Book(String title, String author, String publisher, int price, String contactEmail, DealWay dealWay, String dealPlace, String image, String state, String askFor) {
         this.title = title;
+        this.author = author;
         this.publisher = publisher;
         this.price = price;
-        this.deal_way = deal_way;
-        this.deal_place = deal_place;
+        this.contactEmail = contactEmail;
+        this.dealWay = dealWay;
+        this.dealPlace = dealPlace;
         this.image = image;
         this.state = state;
-        this.ask_for = ask_for;
+        this.askFor = askFor;
     }
 
-    public enum Deal_way
+    public enum DealWay
     {
-        DIRECT,
-        DELIVERY,
-        BOTH
+        DIRECT,     // 직거래
+        DELIVERY   // 택배
     }
 }

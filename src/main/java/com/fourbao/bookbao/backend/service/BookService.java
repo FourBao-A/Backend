@@ -4,7 +4,10 @@ import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.entity.Book;
+import com.fourbao.bookbao.backend.entity.User;
 import com.fourbao.bookbao.backend.repository.BookRepository;
+import com.fourbao.bookbao.backend.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,21 +21,38 @@ public class BookService
 {
 
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
-    public void saveBook(EnrollBookRequest enrollBookRequest) throws BaseException
+    public void saveBook(HttpSession session, EnrollBookRequest enrollBookRequest) throws BaseException
     {
+        Object objectUser = session.getAttribute("user");
+        if (objectUser == null) {
+            throw new BaseException(BaseResponseStatus.INVALID_SESSION);
+        }
+
+        User user = userRepository.findBySchoolNum(objectUser.toString())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_USER));
+
+        log.info("[USER]: {}", user.getName());
+
         Book book = Book.builder()
-                .title(enrollBookRequest.getTitle())
+                .title(enrollBookRequest.getName())
                 .author(enrollBookRequest.getAuthor())
                 .publisher(enrollBookRequest.getPublisher())
                 .price(enrollBookRequest.getPrice())
-                .deal_way(enrollBookRequest.getDeal_way())
-                .deal_place(enrollBookRequest.getDeal_place())
+                .contactEmail(enrollBookRequest.getEmail())
+                .dealWay(enrollBookRequest.getDealWay())
+                .dealPlace(enrollBookRequest.getPlace())
+                .image(enrollBookRequest.getThumbnail())
                 .state(enrollBookRequest.getState())
-                .ask_for(enrollBookRequest.getAsk_for())
+                .askFor(enrollBookRequest.getAskFor())
                 .build();
+
+        user.addBook(book);
+
         try
         {
+            userRepository.save(user);
             bookRepository.save(book);
         } catch (Exception e)
         {
