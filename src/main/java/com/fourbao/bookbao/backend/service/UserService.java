@@ -2,6 +2,7 @@ package com.fourbao.bookbao.backend.service;
 
 import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
+import com.fourbao.bookbao.backend.dto.request.UserEmailUpdateRequest;
 import com.fourbao.bookbao.backend.dto.response.UserMyPageResponse;
 import com.fourbao.bookbao.backend.entity.User;
 import com.fourbao.bookbao.backend.repository.UserRepository;
@@ -35,5 +36,20 @@ public class UserService {
         return userMyPageResponse;
     }
 
+    public void updateEmail(HttpSession session, UserEmailUpdateRequest emailUpdateRequest) throws BaseException {
+        Object objectUser = session.getAttribute("user");
+        if (objectUser == null) {
+            throw new BaseException(BaseResponseStatus.INVALID_SESSION);
+        }
 
+        User user = userRepository.findBySchoolNum(objectUser.toString())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_USER));
+
+        user.setEmail(emailUpdateRequest.getEmail());
+        try {
+            userRepository.save(user);
+        } catch (BaseException e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_INSERT_ERROR);
+        }
+    }
 }
