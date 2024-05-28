@@ -2,9 +2,9 @@ package com.fourbao.bookbao.backend.controller;
 
 import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponse;
-import com.fourbao.bookbao.backend.dto.entitiy.BookDTO;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.dto.request.SearchBookRequest;
+import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.service.BookService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -33,22 +33,17 @@ public class BookController
         }
     }
 
-    /**
-     * requestbody:
-     *
-     * @param httpSession
-     * @return
-     */
+
     @GetMapping("/search")
-    public BaseResponse<List<BookDTO>> searchBooks(HttpSession httpSession, @RequestBody SearchBookRequest searchBookRequest)
+    public BaseResponse<List<SearchBookResponse>> searchBooks(HttpSession httpSession, @RequestBody SearchBookRequest searchBookRequest)
     {
         try
         {
-            List<BookDTO> books = bookService.searchBooks(searchBookRequest);
-            return new BaseResponse<List<BookDTO>>(books);
-        } catch (Exception e)
+            List<SearchBookResponse> searchBooks = bookService.searchBooks(httpSession, searchBookRequest);
+            return new BaseResponse<>(searchBooks);
+        } catch (BaseException e)
         {
-            return new BaseResponse<>(List.of()); // 예외 상황 처리
+            return new BaseResponse<>(e.getStatus()); // 예외 상황 처리
         }
     }
 }

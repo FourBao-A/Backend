@@ -43,13 +43,16 @@ public class Book extends BaseEntity
 
     private String askFor;
 
+    @Column(nullable = false)
+    private SaleState saleState;
+
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Builder
-    public Book(String title, String author, String publisher, int price, String contactEmail, DealWay dealWay, String dealPlace, String image, String state, String askFor) {
+    public Book(String title, String author, String publisher, int price, String contactEmail, DealWay dealWay, String dealPlace, String image, String state, String askFor, SaleState saleState) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
@@ -60,6 +63,7 @@ public class Book extends BaseEntity
         this.image = image;
         this.state = state;
         this.askFor = askFor;
+        this.saleState = saleState;
     }
 
     public enum DealWay
@@ -67,4 +71,10 @@ public class Book extends BaseEntity
         DIRECT,     // 직거래
         DELIVERY   // 택배
     }
+
+    public enum SaleState {
+        SOLD,
+        NOT_SOLD
+    }
+
 }
