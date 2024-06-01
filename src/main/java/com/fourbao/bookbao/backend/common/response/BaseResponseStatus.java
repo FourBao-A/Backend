@@ -11,6 +11,7 @@ public enum BaseResponseStatus {
     /** client error - 4xx */
     NON_EXIST_USER(false, HttpStatus.NOT_FOUND.value(), "존재하지 않는 회원입니다."),
     NON_EXIST_EMAIL(false, HttpStatus.NOT_FOUND.value(), "올바르지 않은 이메일입니다."),
+    NON_EXIST_BOOK(false, HttpStatus.NOT_FOUND.value(), "존재하지 않는 도서입니다."),
     INVALID_SESSION(false, HttpStatus.UNAUTHORIZED.value(), "존재하지 않는 세션입니다."),
 
 

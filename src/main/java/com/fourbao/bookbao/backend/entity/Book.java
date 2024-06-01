@@ -8,7 +8,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Getter @Setter
 public class Book extends BaseEntity
 {
     @Id
@@ -36,7 +36,6 @@ public class Book extends BaseEntity
 
     private String dealPlace;
 
-    @Column(nullable = false)
     private String image;
 
     private String state;
@@ -46,7 +45,6 @@ public class Book extends BaseEntity
     @Column(nullable = false)
     private SaleState saleState;
 
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
