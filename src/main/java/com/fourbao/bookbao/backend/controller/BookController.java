@@ -4,6 +4,7 @@ import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponse;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.dto.request.SearchBookRequest;
+import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
 import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.service.BookService;
 import jakarta.servlet.http.HttpSession;
@@ -44,6 +45,16 @@ public class BookController
         } catch (BaseException e)
         {
             return new BaseResponse<>(e.getStatus()); // 예외 상황 처리
+        }
+    }
+
+    @PatchMapping("/update")
+    public BaseResponse<String> updateBookInfo(HttpSession httpSession, @RequestBody UpdateBookRequest updateBookRequest) {
+        try {
+            bookService.updateBookInfo(httpSession, updateBookRequest);
+            return new BaseResponse<>("도서 정보 수정에 성공하였습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
         }
     }
 }

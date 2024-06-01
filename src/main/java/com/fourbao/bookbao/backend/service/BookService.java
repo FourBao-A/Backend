@@ -5,6 +5,7 @@ import com.fourbao.bookbao.backend.common.response.BaseResponse;
 import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.dto.request.SearchBookRequest;
+import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
 import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.entity.Book;
 import com.fourbao.bookbao.backend.entity.User;
@@ -70,7 +71,7 @@ public class BookService
     }
 
 
-    public List<SearchBookResponse> searchBooks(HttpSession httpSession, SearchBookRequest searchBookRequest) {
+    public List<SearchBookResponse> searchBooks(HttpSession httpSession, SearchBookRequest searchBookRequest) throws BaseException {
         Object objectUser = httpSession.getAttribute("user");
         if (objectUser == null) {
             throw new BaseException(BaseResponseStatus.INVALID_SESSION);
@@ -88,5 +89,34 @@ public class BookService
             return Collections.EMPTY_LIST;
         }
         return searchBookResponseList;
+    }
+
+    public void updateBookInfo(HttpSession httpSession, UpdateBookRequest updateBookRequest) throws BaseException {
+        Object objectUser = httpSession.getAttribute("user");
+        if (objectUser == null) {
+            throw new BaseException(BaseResponseStatus.INVALID_SESSION);
+        }
+
+        User user = userRepository.findBySchoolNum(objectUser.toString())
+                .orElseThrow(()->new BaseException(BaseResponseStatus.NON_EXIST_USER));
+
+        Book book = bookRepository.findById(updateBookRequest.getId())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_BOOK));
+
+        book.setTitle(updateBookRequest.getName());
+        book.setAuthor(updateBookRequest.getAuthor());
+        book.setPublisher(updateBookRequest.getPublisher());
+        book.setPrice(updateBookRequest.getPrice());
+        book.setContactEmail(updateBookRequest.getEmail());
+        book.setDealWay(updateBookRequest.getDealWay());
+        book.setDealPlace(updateBookRequest.getPlace());
+        book.setState(updateBookRequest.getState());
+        book.setAskFor(updateBookRequest.getAskFor());
+
+        try {
+            bookRepository.save(book);
+        } catch (BaseException e) {
+            throw new BaseException(BaseResponseStatus.DATABASE_INSERT_ERROR);
+        }
     }
 }
