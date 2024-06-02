@@ -30,9 +30,13 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*"); // e.g. http://domain1.com
+        config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("Authorization");
+        config.addExposedHeader("Set-Cookie");
+        config.addExposedHeader("Cookie");
+        config.addExposedHeader("X-Session-ID");
 
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
