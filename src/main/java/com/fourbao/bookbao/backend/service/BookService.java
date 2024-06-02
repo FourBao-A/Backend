@@ -4,7 +4,6 @@ import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponse;
 import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
-import com.fourbao.bookbao.backend.dto.request.SearchBookRequest;
 import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
 import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.entity.Book;
@@ -71,7 +70,7 @@ public class BookService
     }
 
 
-    public List<SearchBookResponse> searchBooks(HttpSession httpSession, SearchBookRequest searchBookRequest) throws BaseException {
+    public List<SearchBookResponse> searchBooks(HttpSession httpSession, String search) throws BaseException {
         Object objectUser = httpSession.getAttribute("user");
         if (objectUser == null) {
             throw new BaseException(BaseResponseStatus.INVALID_SESSION);
@@ -80,7 +79,7 @@ public class BookService
         User user = userRepository.findBySchoolNum(objectUser.toString())
                 .orElseThrow(()->new BaseException(BaseResponseStatus.NON_EXIST_USER));
 
-        List<Book> books = bookRepository.findByKeyword(searchBookRequest.getSearch());
+        List<Book> books = bookRepository.findByKeyword(search);
         List<SearchBookResponse> searchBookResponseList = books.stream()
                 .map(SearchBookResponse::entityToSearchBookResponse)
                 .collect(Collectors.toList());

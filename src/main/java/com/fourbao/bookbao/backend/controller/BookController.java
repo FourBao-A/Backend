@@ -3,7 +3,6 @@ package com.fourbao.bookbao.backend.controller;
 import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponse;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
-import com.fourbao.bookbao.backend.dto.request.SearchBookRequest;
 import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
 import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.service.BookService;
@@ -36,11 +35,11 @@ public class BookController
 
 
     @GetMapping("/search")
-    public BaseResponse<List<SearchBookResponse>> searchBooks(HttpSession httpSession, @RequestBody SearchBookRequest searchBookRequest)
+    public BaseResponse<List<SearchBookResponse>> searchBooks(HttpSession httpSession, @RequestParam String search)
     {
         try
         {
-            List<SearchBookResponse> searchBooks = bookService.searchBooks(httpSession, searchBookRequest);
+            List<SearchBookResponse> searchBooks = bookService.searchBooks(httpSession, search);
             return new BaseResponse<>(searchBooks);
         } catch (BaseException e)
         {
