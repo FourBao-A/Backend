@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SearchBookResponse {
+    private long id;
     private String name;
     private String author;
     private String publisher;
@@ -16,6 +17,7 @@ public class SearchBookResponse {
 
     public static SearchBookResponse entityToSearchBookResponse(Book book) {
         return new SearchBookResponse(
+                book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
                 book.getPublisher(),
