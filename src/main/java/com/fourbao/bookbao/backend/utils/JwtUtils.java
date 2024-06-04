@@ -29,6 +29,7 @@ public class JwtUtils {
 
     public JwtUtils(@Value("${jwt.secret}") String jwtSecret) {
         try {
+            log.info("[JWT SECRET]: {}", jwtSecret);
             byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
             this.key = Keys.hmacShaKeyFor(keyBytes);
         } catch (IllegalArgumentException e) {
