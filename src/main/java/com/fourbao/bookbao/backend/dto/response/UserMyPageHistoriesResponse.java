@@ -11,13 +11,15 @@ public class UserMyPageHistoriesResponse {
     private String name;
     private String author;
     private String publisher;
+    private int price;
 
     public static UserMyPageHistoriesResponse entityToUserMyPageHistoriesResponse(Book book) {
         return new UserMyPageHistoriesResponse(
                 book.getId(),
                 book.getTitle(),
                 book.getAuthor(),
-                book.getPublisher()
+                book.getPublisher(),
+                book.getPrice()
         );
     }
 }
