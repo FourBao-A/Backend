@@ -12,6 +12,7 @@ public class UserMyPageHistoriesResponse {
     private String author;
     private String publisher;
     private int price;
+    private String thumbnail;
 
     public static UserMyPageHistoriesResponse entityToUserMyPageHistoriesResponse(Book book) {
         return new UserMyPageHistoriesResponse(
@@ -19,7 +20,8 @@ public class UserMyPageHistoriesResponse {
                 book.getTitle(),
                 book.getAuthor(),
                 book.getPublisher(),
-                book.getPrice()
+                book.getPrice(),
+                book.getImage()
         );
     }
 }
