@@ -20,7 +20,7 @@ public class User extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private String schoolNum;
+    private String schoolId;
 
     @Setter
     @Column(nullable = false)
@@ -30,9 +30,9 @@ public class User extends BaseEntity {
     private List<Book> books = new ArrayList<>();
 
     @Builder
-    public User(String name, String schoolNum, String email) {
+    public User(String name, String schoolId, String email) {
         this.name = name;
-        this.schoolNum = schoolNum;
+        this.schoolId = schoolId;
         this.email = email;
     }
 

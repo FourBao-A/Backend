@@ -10,6 +10,7 @@ import com.fourbao.bookbao.backend.entity.Book;
 import com.fourbao.bookbao.backend.entity.User;
 import com.fourbao.bookbao.backend.repository.BookRepository;
 import com.fourbao.bookbao.backend.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,18 +30,11 @@ public class BookService
 {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public void saveBook(HttpSession session, EnrollBookRequest enrollBookRequest) throws BaseException
+    public void saveBook(HttpServletRequest request, EnrollBookRequest enrollBookRequest) throws BaseException
     {
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null)
-        {
-            throw new BaseException(BaseResponseStatus.INVALID_SESSION);
-        }
-
-        User user = userRepository.findBySchoolNum(objectUser.toString())
-                .orElseThrow(()->new BaseException(BaseResponseStatus.NON_EXIST_USER));
-
+        User user = userService.getUser(request);
 
         Book book = Book.builder()
                 .title(enrollBookRequest.getName())
@@ -70,14 +64,8 @@ public class BookService
     }
 
 
-    public List<SearchBookResponse> searchBooks(HttpSession httpSession, String search) throws BaseException {
-        Object objectUser = httpSession.getAttribute("user");
-        if (objectUser == null) {
-            throw new BaseException(BaseResponseStatus.INVALID_SESSION);
-        }
-
-        User user = userRepository.findBySchoolNum(objectUser.toString())
-                .orElseThrow(()->new BaseException(BaseResponseStatus.NON_EXIST_USER));
+    public List<SearchBookResponse> searchBooks(HttpServletRequest request, String search) throws BaseException {
+        User user = userService.getUser(request);
 
         List<Book> books = bookRepository.findByKeyword(search);
         List<SearchBookResponse> searchBookResponseList = books.stream()
@@ -90,14 +78,8 @@ public class BookService
         return searchBookResponseList;
     }
 
-    public void updateBookInfo(HttpSession httpSession, UpdateBookRequest updateBookRequest) throws BaseException {
-        Object objectUser = httpSession.getAttribute("user");
-        if (objectUser == null) {
-            throw new BaseException(BaseResponseStatus.INVALID_SESSION);
-        }
-
-        User user = userRepository.findBySchoolNum(objectUser.toString())
-                .orElseThrow(()->new BaseException(BaseResponseStatus.NON_EXIST_USER));
+    public void updateBookInfo(HttpServletRequest request, UpdateBookRequest updateBookRequest) throws BaseException {
+        User user = userService.getUser(request);
 
         Book book = bookRepository.findById(updateBookRequest.getId())
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_BOOK));

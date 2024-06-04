@@ -6,7 +6,10 @@ import com.fourbao.bookbao.backend.dto.request.UserLoginRequest;
 import com.fourbao.bookbao.backend.dto.response.PortalApiResponse;
 import com.fourbao.bookbao.backend.entity.User;
 import com.fourbao.bookbao.backend.repository.UserRepository;
+import com.fourbao.bookbao.backend.utils.JwtUtils;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,16 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.fourbao.bookbao.backend.common.properties.JwtProperties.*;
 
 @Service
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class SessionLoginService {
+public class LoginService {
     private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
 
-    public void loginToPortal(UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest) throws BaseException {
+    public void loginToPortal(UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest, HttpServletResponse response) throws BaseException {
         String url = "https://auth.imsejong.com/auth?method=DosejongSession";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -50,36 +57,51 @@ public class SessionLoginService {
                     session.setAttribute("user", userLoginRequest.getId());
                     log.info("[SESSION 생성]");
 
-                    Optional<User> optionalUser = userRepository.findBySchoolNum(session.getAttribute("user").toString());
+                    Optional<User> optionalUser = userRepository.findBySchoolId(session.getAttribute("user").toString());
+                    User user = null;
                     if (optionalUser.isEmpty()) {
+                        log.info("[처음 접속 user 생성]");
                         /** 처음 접속 시 user 생성 */
-                        User user = User.builder()
+                        user = User.builder()
                                 .name(portalApiResponse.getBody().getResult().getBody().getName())
-                                .schoolNum(userLoginRequest.getId())
+                                .schoolId(userLoginRequest.getId())
                                 .email(userLoginRequest.getEmail())
                                 .build();
-
                         try {
                             userRepository.save(user);
                         } catch (BaseException e) {
                             throw new BaseException(BaseResponseStatus.DATABASE_INSERT_ERROR);
                         }
-                    } else {
-                        // 이메일 수정한 경우
-                        if (!optionalUser.get().getEmail().equals(userLoginRequest.getEmail())) {
-                            throw new BaseException(BaseResponseStatus.NON_EXIST_EMAIL);
-                        }
+                    } else if (!optionalUser.get().getEmail().equals(userLoginRequest.getEmail())) {
+                        throw new BaseException(BaseResponseStatus.NON_EXIST_EMAIL);
                     }
+                    
+                    // 토큰 처리 로직
+                    if (optionalUser.isPresent()) user = optionalUser.get();
+                    Map<String, String> tokens = jwtUtils.generateToken(user);
+
+
+                    Cookie refreshCookie = new Cookie(JWT_REFRESH_TOKEN_COOKIE_NAME, tokens.get("refreshToken"));
+                    refreshCookie.setMaxAge((int) REFRESH_TOKEN_EXPIRE_TIME); // 쿠키의 만료시간 설정
+                    refreshCookie.setPath("/");
+                    response.addCookie(refreshCookie);
+
+                    // 토큰을 응답 헤더에 설정
+                    response.addHeader(JWT_ACCESS_TOKEN_HEADER_NAME, JWT_ACCESS_TOKEN_TYPE + tokens.get("accessToken"));
+                    response.setHeader(JWT_REFRESH_TOKEN_COOKIE_NAME, tokens.get("refreshToken"));
+
                 } else {
-                    Optional<User> optionalUser = userRepository.findBySchoolNum(session.getAttribute("user").toString());
+                    Optional<User> optionalUser = userRepository.findBySchoolId(session.getAttribute("user").toString());
                     if (!optionalUser.get().getEmail().equals(userLoginRequest.getEmail())) {
                         throw new BaseException(BaseResponseStatus.NON_EXIST_EMAIL);
                     }
                 }
-            } else {
+            } else {        // 세종대 구성원이 아닌 경우
                 throw new BaseException(BaseResponseStatus.NON_EXIST_USER);
             }
         }
+        // 외부 api와 통신이 안된 경우
+//         return null;
     }
 }
 
