@@ -6,6 +6,7 @@ import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
 import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.service.BookService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +22,11 @@ public class BookController
     private final BookService bookService;
 
     @PostMapping("/enroll")
-    public BaseResponse<String> enrollBookRequestBaseResponse(HttpSession httpSession, @RequestBody EnrollBookRequest enrollBookRequest)
+    public BaseResponse<String> enrollBookRequestBaseResponse(HttpServletRequest request, @RequestBody EnrollBookRequest enrollBookRequest)
     {
         try
         {
-            bookService.saveBook(httpSession, enrollBookRequest);
+            bookService.saveBook(request, enrollBookRequest);
             return new BaseResponse<>("도서 등록에 성공하였습니다.");
         } catch (BaseException e)
         {
@@ -35,11 +36,11 @@ public class BookController
 
 
     @GetMapping("/search")
-    public BaseResponse<List<SearchBookResponse>> searchBooks(HttpSession httpSession, @RequestParam String search)
+    public BaseResponse<List<SearchBookResponse>> searchBooks(HttpServletRequest request, @RequestParam String search)
     {
         try
         {
-            List<SearchBookResponse> searchBooks = bookService.searchBooks(httpSession, search);
+            List<SearchBookResponse> searchBooks = bookService.searchBooks(request, search);
             return new BaseResponse<>(searchBooks);
         } catch (BaseException e)
         {
@@ -48,9 +49,9 @@ public class BookController
     }
 
     @PatchMapping("/update")
-    public BaseResponse<String> updateBookInfo(HttpSession httpSession, @RequestBody UpdateBookRequest updateBookRequest) {
+    public BaseResponse<String> updateBookInfo(HttpServletRequest request, @RequestBody UpdateBookRequest updateBookRequest) {
         try {
-            bookService.updateBookInfo(httpSession, updateBookRequest);
+            bookService.updateBookInfo(request, updateBookRequest);
             return new BaseResponse<>("도서 정보 수정에 성공하였습니다.");
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
