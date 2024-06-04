@@ -51,16 +51,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String jwtToken = jwtHeader.replace("Bearer ", "");
         String userSchoolId = jwtUtils.getUserSchoolId(jwtToken);
         log.info("[JwtAuthorizationFilter] Valid Token");
-        log.info("[JwtAuthorizationFilter] Access User userSchoolId = {}", userSchoolId);
 
         if (userSchoolId != null) {
             User user = userRepository.findBySchoolId(userSchoolId)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_USER));
 
-            log.info("[user school id]: {}", user.getSchoolId());
             BookBaoPrincipal bookBaoPrincipal = BookBaoPrincipal.createBookbaoPrincipalByUserEntity(user);
 
-            log.info("[getAuthorities]: {}", bookBaoPrincipal.getAuthorities());
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     bookBaoPrincipal,
                     null,
