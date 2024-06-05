@@ -59,12 +59,12 @@ public class BookController
         }
     }
 
-    @GetMapping("/{bookId}")
-    public BaseResponse<BookDetailResponse> getBookDetail(HttpServletRequest request, @PathVariable Long bookId)
+    @GetMapping("/detail")
+    public BaseResponse<BookDetailResponse> getBookDetail(HttpServletRequest request, @RequestParam Long id)
     {
         try
         {
-            BookDetailResponse bookDetailResponse = bookService.getBookDetail(request, bookId);
+            BookDetailResponse bookDetailResponse = bookService.getBookDetail(request, id);
             return new BaseResponse<>(bookDetailResponse);
         }catch (BaseException e)
         {
