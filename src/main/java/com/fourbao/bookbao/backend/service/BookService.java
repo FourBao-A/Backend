@@ -5,6 +5,7 @@ import com.fourbao.bookbao.backend.common.response.BaseResponse;
 import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
+import com.fourbao.bookbao.backend.dto.response.BookDetailResponse;
 import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.entity.Book;
 import com.fourbao.bookbao.backend.entity.User;
@@ -99,5 +100,13 @@ public class BookService
         } catch (BaseException e) {
             throw new BaseException(BaseResponseStatus.DATABASE_INSERT_ERROR);
         }
+    }
+
+    public BookDetailResponse getBookDetail(HttpServletRequest request, Long bookId) throws BaseException
+    {
+        User user = userService.getUser(request);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_BOOK));
+        return BookDetailResponse.entityToBookDetailResponse(book);
     }
 }
