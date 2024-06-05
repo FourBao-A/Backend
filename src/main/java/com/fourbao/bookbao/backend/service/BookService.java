@@ -107,6 +107,19 @@ public class BookService
         User user = userService.getUser(request);
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_BOOK));
-        return BookDetailResponse.entityToBookDetailResponse(book);
+        BookDetailResponse bookDetailResponse = BookDetailResponse.builder()
+                .name(book.getTitle())
+                .author(book.getAuthor())
+                .publisher(book.getPublisher())
+                .price(book.getPrice())
+                .askFor(book.getAskFor())
+                .email(book.getContactEmail())
+                .thumbnail(book.getImage())
+                .dealWay(book.getDealWay())
+                .dealPlace(book.getDealPlace())
+                .state(book.getState())
+                .build();
+
+        return bookDetailResponse;
     }
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class BookDetailResponse
 {
@@ -28,20 +29,4 @@ public class BookDetailResponse
     private String thumbnail;
 
     private String state;
-
-    public static BookDetailResponse entityToBookDetailResponse(Book book)
-    {
-        return new BookDetailResponse(
-                book.getTitle(),
-                book.getAuthor(),
-                book.getPublisher(),
-                book.getPrice(),
-                book.getAskFor(),
-                book.getContactEmail(),
-                book.getDealWay(),
-                book.getDealPlace(),
-                book.getImage(),
-                book.getState()
-        );
-    }
 }
