@@ -4,6 +4,7 @@ import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponse;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
+import com.fourbao.bookbao.backend.dto.response.BookDetailResponse;
 import com.fourbao.bookbao.backend.dto.response.SearchBookResponse;
 import com.fourbao.bookbao.backend.service.BookService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,6 +55,19 @@ public class BookController
             bookService.updateBookInfo(request, updateBookRequest);
             return new BaseResponse<>("도서 정보 수정에 성공하였습니다.");
         } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @GetMapping("/detail")
+    public BaseResponse<BookDetailResponse> getBookDetail(HttpServletRequest request, @RequestParam Long id)
+    {
+        try
+        {
+            BookDetailResponse bookDetailResponse = bookService.getBookDetail(request, id);
+            return new BaseResponse<>(bookDetailResponse);
+        }catch (BaseException e)
+        {
             return new BaseResponse<>(e.getStatus());
         }
     }
