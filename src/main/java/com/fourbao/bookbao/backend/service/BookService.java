@@ -1,5 +1,6 @@
 package com.fourbao.bookbao.backend.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponse;
 import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
@@ -121,5 +122,25 @@ public class BookService
                 .build();
 
         return bookDetailResponse;
+    }
+
+    public void deleteBook(HttpServletRequest request, Long id) throws BaseException
+    {
+        User user = userService.getUser(request);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_BOOK));
+
+        if (!book.getUser().getId().equals(user.getId()))
+            throw new BaseException(BaseResponseStatus.NON_EXIST_USER);     // 사용자의 도서가 아닌 경우의 예외 처리 필요
+
+        try
+        {
+            user.removeBook(book);
+            bookRepository.delete(book);
+        } catch (Exception e)
+        {
+            log.error("책 삭제 실패: {}", e.getMessage());
+            throw new BaseException(BaseResponseStatus.NON_EXIST_BOOK);     // DATABASE_DELETE_ERROR
+        }
     }
 }

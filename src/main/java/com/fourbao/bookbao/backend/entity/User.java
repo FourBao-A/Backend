@@ -40,4 +40,10 @@ public class User extends BaseEntity {
         this.books.add(book);
         book.setUser(this);
     }
+
+    public void removeBook(Book book)
+    {
+        this.books.remove(book);
+        book.setUser(null);
+    }
 }
