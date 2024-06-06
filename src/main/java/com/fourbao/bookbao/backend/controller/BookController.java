@@ -74,7 +74,7 @@ public class BookController
     }
 
     @DeleteMapping("/delete")
-    public BaseResponse<String> deleteBook(HttpServletRequest request, @RequestBody Long id)
+    public BaseResponse<String> deleteBook(HttpServletRequest request, @RequestParam Long id)
     {
         try
         {
