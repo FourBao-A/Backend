@@ -2,6 +2,7 @@ package com.fourbao.bookbao.backend.controller;
 
 import com.fourbao.bookbao.backend.common.exception.BaseException;
 import com.fourbao.bookbao.backend.common.response.BaseResponse;
+import com.fourbao.bookbao.backend.common.response.BaseResponseStatus;
 import com.fourbao.bookbao.backend.dto.request.EnrollBookRequest;
 import com.fourbao.bookbao.backend.dto.request.UpdateBookRequest;
 import com.fourbao.bookbao.backend.dto.response.BookDetailResponse;
@@ -67,6 +68,19 @@ public class BookController
             BookDetailResponse bookDetailResponse = bookService.getBookDetail(request, id);
             return new BaseResponse<>(bookDetailResponse);
         }catch (BaseException e)
+        {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public BaseResponse<String> deleteBook(HttpServletRequest request, @RequestParam Long id)
+    {
+        try
+        {
+            bookService.deleteBook(request, id);
+            return new BaseResponse<>("도서 삭제에 성공하였습니다.");
+        } catch (BaseException e)
         {
             return new BaseResponse<>(e.getStatus());
         }
