@@ -140,7 +140,7 @@ public class BookService
         } catch (Exception e)
         {
             log.error("책 삭제 실패: {}", e.getMessage());
-            throw new BaseException(BaseResponseStatus.NON_EXIST_BOOK);     // DATABASE_DELETE_ERROR
+            throw new BaseException(BaseResponseStatus.DATABASE_INSERT_ERROR);     // DATABASE_DELETE_ERROR
         }
     }
 }
