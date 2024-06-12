@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// User의 로그인을 담당하는 Controller
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class LoginController {
     private final LoginService loginService;
 
+    //사용자 로그인 요청 처리
     @PostMapping("/login")
     public BaseResponse<String> login(@Valid @RequestBody UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest, HttpServletResponse response, BindingResult result) {
         if (result.hasErrors()) {

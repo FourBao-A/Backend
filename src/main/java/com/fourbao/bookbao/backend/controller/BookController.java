@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//도서 관리 기능을 제공하는 Controller
+
 @RestController
 @RequestMapping("/api/v1/book")
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class BookController
 
     private final BookService bookService;
 
+    //도서 등록 요청 처리
     @PostMapping("/enroll")
     public BaseResponse<String> enrollBookRequestBaseResponse(HttpServletRequest request, @RequestBody EnrollBookRequest enrollBookRequest)
     {
@@ -36,7 +39,7 @@ public class BookController
         }
     }
 
-
+    //도서 검색 기능
     @GetMapping("/search")
     public BaseResponse<List<SearchBookResponse>> searchBooks(HttpServletRequest request, @RequestParam String search)
     {
@@ -50,6 +53,7 @@ public class BookController
         }
     }
 
+    //도서 정보 수정 기능
     @PatchMapping("/update")
     public BaseResponse<String> updateBookInfo(HttpServletRequest request, @RequestBody UpdateBookRequest updateBookRequest) {
         try {
@@ -60,6 +64,7 @@ public class BookController
         }
     }
 
+    //도서 상세 정보 조회 기능
     @GetMapping("/detail")
     public BaseResponse<BookDetailResponse> getBookDetail(HttpServletRequest request, @RequestParam Long id)
     {
@@ -73,6 +78,7 @@ public class BookController
         }
     }
 
+    //도서 삭제 기능
     @DeleteMapping("/delete")
     public BaseResponse<String> deleteBook(HttpServletRequest request, @RequestParam Long id)
     {

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
+// 도서의 정보를 저장하는 Entity
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
