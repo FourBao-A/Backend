@@ -30,6 +30,7 @@ public class SecurityConfig {
     private final JwtUtils jwtUtils;
     private final BookBaoPrincipalService bookBaoPrincipalService;
 
+    // spring security 보안 규칙 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -55,6 +56,7 @@ public class SecurityConfig {
         return httpSecurity.build();
     }
 
+    // NON_AUTHENTICATED에 담긴 패턴은 ignore
     @Bean
     public WebSecurityCustomizer securityCustomizer() {
         final String[] NON_AUTHENTICATED = {
@@ -64,6 +66,7 @@ public class SecurityConfig {
             web.ignoring().requestMatchers(NON_AUTHENTICATED);
         };
     }
+
 
     @Bean
     public CorsFilter corsFilter() {

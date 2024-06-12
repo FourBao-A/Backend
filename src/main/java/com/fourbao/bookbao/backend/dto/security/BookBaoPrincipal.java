@@ -24,7 +24,7 @@ public class BookBaoPrincipal implements UserDetails {
     private String email;
     private Collection<SimpleGrantedAuthority> authorities;
 
-
+    // 사용자 권한 부여
     public BookBaoPrincipal(String name, String schoolId, String email) {
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
@@ -38,6 +38,7 @@ public class BookBaoPrincipal implements UserDetails {
         );
     }
 
+    // user entity 생성
     public static BookBaoPrincipal createBookbaoPrincipalByUserEntity(User user) {
         return BookBaoPrincipal.buildBookbaoPrincipalEntity(
                 user.getName(),

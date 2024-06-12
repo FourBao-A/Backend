@@ -33,6 +33,14 @@ public class LoginService {
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
 
+    /**
+     * login 기능
+     * 사용자로부터 포털 아이디, 비번, 이메일을 입력받아 id, pw는 "https://auth.imsejong.com/auth?method=DosejongSession" 여기로 보냄
+     * 사용자의 이름, 학번 수준의 정보만 필요하므로 method=DosejongSession
+     * 세종대 구성원 인증 통과 시 토큰 발급
+     *
+     * 세종대 구성원이 아니거나 이메일이 틀렸다면 에러 던짐
+     */
     public void loginToPortal(UserLoginRequest userLoginRequest, HttpServletRequest httpServletRequest, HttpServletResponse response) throws BaseException {
         String url = "https://auth.imsejong.com/auth?method=DosejongSession";
         HttpHeaders headers = new HttpHeaders();

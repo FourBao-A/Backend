@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class BookBaoPrincipalService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    // 학번으로 사용자 찾아서 createUserEntity
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findBySchoolId(username)
