@@ -21,6 +21,8 @@ import java.util.Map;
 import static com.fourbao.bookbao.backend.common.properties.JwtProperties.ACCESS_TOKEN_EXPIRE_TIME;
 import static com.fourbao.bookbao.backend.common.properties.JwtProperties.REFRESH_TOKEN_EXPIRE_TIME;
 
+// JWT 토큰 유틸리티 클래스
+
 @Slf4j
 @Component
 public class JwtUtils {
@@ -36,6 +38,7 @@ public class JwtUtils {
         }
     }
 
+    // 토큰을 생성해주는 기능
     public Map<String, String> generateToken (User user) {
         String accessToken = Jwts.builder()
                 .setHeaderParam("alg", "HS256")
@@ -58,6 +61,7 @@ public class JwtUtils {
         return tokenInfo;
     }
 
+    // 토큰에서 User ID 추출
     public String getUserSchoolId(String accessToken) throws BaseException {
         try {
             String schoolId = Jwts

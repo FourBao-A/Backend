@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//도서 관리 기능을 제공하는 Service
+
 @Service
 @Transactional
 @Slf4j
@@ -34,6 +36,7 @@ public class BookService
     private final UserRepository userRepository;
     private final UserService userService;
 
+    //도서 등록 요청 처리
     public void saveBook(HttpServletRequest request, EnrollBookRequest enrollBookRequest) throws BaseException
     {
         User user = userService.getUser(request);
@@ -65,7 +68,7 @@ public class BookService
         }
     }
 
-
+    // 도서 검색 기능
     public List<SearchBookResponse> searchBooks(HttpServletRequest request, String search) throws BaseException {
         User user = userService.getUser(request);
 
@@ -80,6 +83,7 @@ public class BookService
         return searchBookResponseList;
     }
 
+    // 도서 정보 수정 기능
     public void updateBookInfo(HttpServletRequest request, UpdateBookRequest updateBookRequest) throws BaseException {
         User user = userService.getUser(request);
 
@@ -103,6 +107,7 @@ public class BookService
         }
     }
 
+    //도서 상세 정보 조회 기능
     public BookDetailResponse getBookDetail(HttpServletRequest request, Long bookId) throws BaseException
     {
         User user = userService.getUser(request);
@@ -124,6 +129,7 @@ public class BookService
         return bookDetailResponse;
     }
 
+    //도서 삭제 기능
     public void deleteBook(HttpServletRequest request, Long id) throws BaseException
     {
         User user = userService.getUser(request);

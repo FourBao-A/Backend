@@ -33,6 +33,7 @@ public class UserService {
     private final BookRepository bookRepository;
     private final JwtUtils jwtUtils;
 
+    // User의 정보를 가져오는 기능
     public User getUser(HttpServletRequest request) throws BaseException {
         String jwtHeader = request.getHeader(JWT_ACCESS_TOKEN_HEADER_NAME);
 
@@ -47,6 +48,7 @@ public class UserService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.NON_EXIST_USER));
     }
 
+    // 마이페이지 정보를 가져오는 기능
     public UserMyPageResponse getMyPage(HttpServletRequest request) throws BaseException {
         User user = this.getUser(request);
 
@@ -66,6 +68,7 @@ public class UserService {
         return userMyPageResponse;
     }
 
+    // 이메일을 업데이트 해주는 기능
     public void updateEmail(HttpServletRequest request, UserEmailUpdateRequest emailUpdateRequest) throws BaseException {
         User user = this.getUser(request);
 

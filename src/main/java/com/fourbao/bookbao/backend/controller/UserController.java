@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
+//User 마이페이지 기능을 제공하는 Controller
+
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
+    //User의 MyPage 정보 제공
     @GetMapping("/mypage")
     public BaseResponse<UserMyPageResponse> getMyPage(HttpServletRequest request) {
         try {
@@ -28,6 +31,7 @@ public class UserController {
         }
     }
 
+    //User의 이메일 수정
     @PatchMapping("/update-email")
     public BaseResponse<String> updateEmail(HttpServletRequest request, @RequestBody UserEmailUpdateRequest emailUpdateRequest) {
         try {
